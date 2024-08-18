@@ -1,10 +1,10 @@
 import csv
 
 def generate():
-    with open("data/apache/logfiles.log", "r") as logfile:
+    with open("../data/apache/logfiles.log", "r") as logfile:
         log_lines = logfile.readlines()
 
-    with open("data/apache/data.csv", "w", newline='') as csvfile:
+    with open("../data/apache/data.csv", "w", newline='') as csvfile:
         csv_writer = csv.writer(csvfile)
         csv_writer.writerow(["IP Address", "Date", "Request", "Endpoint", "Status Code", "Response Size", "Referrer", "User Agent", "Time Taken"])
 

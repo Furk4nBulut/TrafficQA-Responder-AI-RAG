@@ -35,7 +35,7 @@ def generate():
         'referrer': ['-', fak.uri()]
     }
 
-    with open("data/apache/logfiles.log", "w") as f:
+    with open("../data/apache/logfiles.log", "w") as f:
         for _ in range(1, 1000001):
             f.write('%s - - [%s] "%s %s HTTP/1.0" %s %s "%s" "%s" %s\n' %
                 (fak.ipv4(),

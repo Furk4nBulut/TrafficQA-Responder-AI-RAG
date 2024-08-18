@@ -1,5 +1,4 @@
-import TestFileGenerator
-import CSVFileGenerator
+import CSVFileGenerator, TestFileGenerator
 
 
 def main():
