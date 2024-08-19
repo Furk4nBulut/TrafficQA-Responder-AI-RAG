@@ -1,138 +1,87 @@
 # Web Trafik Loglarına Dayalı Yapay Zeka Destekli Soru-Cevap Sistemi
 
-Özetçe:
-Proje, web trafik loglarına dayalı olarak geliştirilen bir yapay zeka destekli soru-cevap sistemi geliştirme süreçlerini içermektedir.
-Sistem, kullanıcılardan gelen doğal dildeki soruları analiz ederek, log verileri analiz ederek yanıt üretmeyi hedeflemektedir. 
-Log verileri veri önişleme adımları ile temizlenmiş, TF-IDF yöntemiyle vektörize edilerek FAISS vektör veri tabanında depolanmıştır. Kullanıcı sorularına en uygun log kayıtlarını bulmak için Retrieval-Augmented Generation (RAG) modeli ile GPT-2 dil modeli kullanılmıştır. Geliştirilen sistem, yapılan testler sonucunda, kullanıcı sorularına  yanıtlar üretebilmiştir.
-Geliştirilen proje, web sitelerinin trafik verilerini daha etkili bir şekilde analiz etmeye ve performanslarını iyileştirmeye yönelik olup bu alanda potansiyel olarak iyileştirme süreçlerine yardımcı olabilecek niteliğe sahiptir.
+## Proje Tanımı
 
-Giriş:
+Bu proje, web trafik loglarına dayalı olarak geliştirilen bir yapay zeka destekli soru-cevap sistemi geliştirme sürecini içermektedir. Sistem, kullanıcıların doğal dilde sorduğu soruları analiz ederek, web trafik loglarından anlamlı yanıtlar üretmeyi amaçlar. Bu proje, özellikle web sitelerinin trafik verilerini daha etkili bir şekilde analiz etmeye ve performanslarını iyileştirmeye yönelik önemli katkılar sunma potansiyeline sahiptir.
 
-Web siteleri, kullanıcı davranışlarını izleyebilmektedir. Bu davranışları trafik logları olarak kaydederek geliştiriciler için sistem performansını değerlendirmeye olanak sağlamaktadır..
-Bu loglar, manuel olarak analiz edilmesi zor, karmaşık ve zaman alıcı olan yüksek miktarda verilerdir. 
-Log verilerinden anlamlı bilgiler çıkarmak kullanıcı deneyimini iyileştirmek için kritik öneme sahiptir.
+## [Proje Raporu](https://github.com/Furk4nBulut/WebTrafficQA-Responder-AI-RAG/blob/master/FurkanBulutReport.pdf)
 
-Geliştirilen proje, web trafik loglarını verilerini analiz eden ve kullanıcıların doğal dildeki sorularına yanıt üreten yapay zeka destekli bir sistemdir. 
-Retrieval-Augmented Generation (RAG) modeli ile geliştirilen bu sistem, üretilen verilerden anlamlı bilgiler çıkararak, trafik analiz süreçlerini hızlandırmaktadır. 
-Bu proje, web sitelerinin performansını artırma ve güvenlik tehditlerini daha hızlı tespit etme konusunda önemli katkı sunma potansiyeline sahiptir.3
+## İçindekiler
 
+- [Giriş](#giriş)
+- [Proje Dosya Yapısı](#proje-dosya-yapısı)
+- [Metodoloji](#metodoloji)
+  - [Veri Hazırlığı ve Ön İşleme](#veri-hazırlığı-ve-ön-i̇şleme)
+  - [RAG Modelinin Oluşturulması](#rag-modelinin-oluşturulması)
+  - [Sistem Entegrasyonu ve Test](#sistem-entegrasyonu-ve-test)
+  - [Performans Değerlendirmesi](#performans-değerlendirmesi)
+- [Kurulum](#kurulum)
+- [Kullanım](#kullanım)
+- [Lisans](#lisans)
 
+## Giriş
 
+Web siteleri, kullanıcı davranışlarını izleyebilmekte ve bu davranışları trafik logları olarak kaydedebilmektedir. Ancak, bu logların manuel olarak analiz edilmesi zor, karmaşık ve zaman alıcıdır. Bu proje, web trafik loglarını analiz ederek kullanıcıların doğal dildeki sorularına yanıt üreten bir yapay zeka destekli sistem geliştirmeyi amaçlar. Sistem, Retrieval-Augmented Generation (RAG) modeli ile güçlendirilmiş olup, trafik analiz süreçlerini hızlandırarak web sitelerinin performansını artırmayı ve güvenlik tehditlerini daha hızlı tespit etmeyi hedefler.
 
+## Proje Dosya Yapısı
 
+- **Product.ipynb**: Projenin çalışır durumda olan Jupyter notebook dosyası.
+- **Data/**:
+  - **Apache/**: `DataGenerator.py` dosyası kullanılarak oluşturulan `logfiles.log` ve `data.csv` dosyaları burada bulunur.
+  - **WebTraffic/**: İnternet üzerinde bulunan hazır veri setlerine ait 5 farklı CSV dosyası içerir.
+- **Data_generator/**: Veri üretme ve CSV formatında kaydetme işlemleri için kullanılan Python dosyaları.
+- **Maintenance/**: Proje geliştirme sürecinde oluşturulan dosyalar.
 
+## Metodoloji
 
+### Veri Hazırlığı ve Ön İşleme
 
+Bu aşama, modelin başarısı için kritik öneme sahiptir. Aşağıda veri hazırlığı ve ön işleme adımları yer almaktadır:
 
+1. **Veri Oluşturma ve Yükleme**: Web trafik logları, Apache sunucusu simüle edilerek oluşturuldu ve `data.csv` dosyasına kaydedildi.
+2. **Veri Temizliği**:
+   - Eksik veriler kontrol edildi ve temizlendi.
+   - Gereksiz sütunlar kaldırıldı.
+3. **Tarih ve Zaman Bilgilerinin İşlenmesi**: `Date` sütunu datetime formatına dönüştürüldü ve yıl, ay, gün, saat gibi yeni özellikler çıkarıldı.
+4. **Yeni Özelliklerin Eklenmesi**: Durum kodlarının sayısal değerlere dönüştürülmesi ve `Request`, `Endpoint`, `Status Code` sütunlarının birleştirilmesi ile `Combined` sütunu oluşturuldu.
 
-#%%
-import pandas as pd
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-import faiss
-import torch
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
+### RAG Modelinin Oluşturulması
 
-# Veri Yükleme
-data = pd.read_csv('data/apache/data.csv')
+RAG modeli, bilgi alma (Retrieval) ve jeneratif model bileşenlerini (Generation) birleştirerek kullanıcı sorgularına anlamlı yanıtlar üreten bir yaklaşımdır. Bu aşamada:
 
-# Veri çerçevesindeki sütun adlarını kontrol et
-print("Sütun Adları:", data.columns)
+1. **Bilgi Alma Bileşeni**:
+   - FAISS ile vektör veri tabanı oluşturuldu ve sorgular için TF-IDF yöntemiyle vektörler hesaplandı.
+   - Kullanıcı sorgularına en uygun log kayıtları FAISS kullanılarak belirlendi.
+2. **Jeneratif Model Bileşeni**:
+   - GPT-2 modeli Hugging Face Transformers kütüphanesi kullanılarak yüklendi ve log kayıtları kullanılarak yanıtlar üretildi.
 
-# Tarih sütununu datetime formatına dönüştürme
-data['Date'] = pd.to_datetime(data['Date'].str.strip('[]'), format='%d/%b/%Y:%H:%M:%S %z', errors='coerce')
+### Sistem Entegrasyonu ve Test
 
-# Eksik Verilerin Kontrolü
-missing_values = data.isnull().sum()
-print("Eksik Veriler:", missing_values)
+Bilgi alma ve jeneratif model bileşenleri entegre edilerek bütünleşik bir sistem oluşturuldu. Bu aşama şu adımları içerir:
 
-# Gereksiz Sütunları Kaldırma (eğer veri çerçevesinde varsa)
-data = data.drop(columns=['Referrer', 'User Agent'], errors='ignore')
+1. **Sistem Entegrasyonu**: FAISS ile yapılan bilgi alma işlemleri, GPT-2 modeliyle entegre edilerek yanıt üretildi.
+2. **Test Senaryoları**: Çeşitli test sorguları oluşturularak sistemin performansı değerlendirildi.
+3. **Sistem Performansının Değerlendirilmesi**: Yanıt kalitesi, doğruluk ve yanıt süreleri ölçülerek sistem performansı analiz edildi.
 
-# Yeni Özellikler Ekleme: Yıl, Ay, Gün, Saat, Dakika
-data['Year'] = data['Date'].dt.year
-data['Month'] = data['Date'].dt.month
-data['Day'] = data['Date'].dt.day
-data['Hour'] = data['Date'].dt.hour
-data['Minute'] = data['Date'].dt.minute
+### Performans Değerlendirmesi
 
-# 'Status Code' sütununu sayısal değerlere dönüştürme (eğer gerekliyse)
-data['Status Code'] = pd.to_numeric(data['Status Code'], errors='coerce')
+Geliştirilen RAG tabanlı soru-cevap sisteminin etkinliği ve verimliliği analiz edilmiştir. Doğruluk, yanıt kalitesi ve yanıt süreleri gibi performans kriterleri değerlendirilmiştir.
 
-# Boş veya Hatalı Verileri Temizleme
-data = data.dropna(subset=['Request', 'Endpoint', 'Status Code'])
-data = data[data['Request'].str.strip() != '']
-data = data[data['Endpoint'].str.strip() != '']
-data = data[data['Status Code'].notna()]  # Sayısal sütunları kontrol et
+## Kurulum
 
-# Birleştirilen metin verisini oluştur
-data['Combined'] = data['Request'] + ' ' + data['Endpoint'] + ' ' + data['Status Code'].astype(str)
+1. Bu projeyi klonlayın:
 
-# Boş verileri kontrol et
-print(data['Combined'].head())
-print(data['Combined'].isnull().sum())
+   ```bash
+   git clone https://github.com/Furk4nBulut/WebTrafficQA-Responder-AI-RAG.git
+   cd WebTrafficQA-Responder-AI-RAG
+   ```
+2. Jupyter Notebook kullanarak `Product.ipynb` dosyasını çalıştırın.
 
-# TF-IDF Vektörizasyonu
-vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(data['Combined']).toarray()
+## Kullanım
 
-# FAISS İndeksi Oluşturma ve Vektörlerin Eklenmesi
-index = faiss.IndexFlatL2(X.shape[1])
-index.add(X.astype('float32'))
+1. `DataGenerator.py` dosyasını çalıştırarak veriyi oluşturun.
+2. Jupyter Notebook üzerinden projeyi çalıştırarak sistemi test edebilir ve geliştirilen modeli kullanarak sorularınıza yanıt alabilirsiniz.
 
-# Kullanıcı Sorgusunu Vektörleştirme ve En Yakın Komşuları Bulma
-def find_relevant_logs(query):
-    query_vector = vectorizer.transform([query]).toarray().astype('float32')
-    D, I = index.search(query_vector, 5)
-    return data.iloc[I[0]]
+## Lisans
 
-# GPT-2 Modeli ile Yanıt Oluşturma
-def generate_response(logs):
-    input_text = " ".join(
-        logs.apply(lambda row: f"{row['Date']} {row['Request']} {row['Endpoint']} {row['Status Code']}",
-                   axis=1).tolist())
-    input_text = input_text[:1000]  # Giriş metnini 1000 karakterle sınırlama
-
-    input_ids = tokenizer.encode(input_text, return_tensors='pt')
-    attention_mask = torch.ones(input_ids.shape, dtype=torch.long)
-
-    output = model.generate(input_ids, attention_mask=attention_mask, max_length=150, num_return_sequences=1,
-                            pad_token_id=tokenizer.eos_token_id)
-    response = tokenizer.decode(output[0], skip_special_tokens=True)
-    return response
-
-# Sorgu Yanıt Sistemi
-def answer_question(query):
-    relevant_logs = find_relevant_logs(query)
-    response = generate_response(relevant_logs)
-    return response
-
-# Model ve Tokenizer Yükleme
-model_name = "gpt2"
-model = GPT2LMHeadModel.from_pretrained(model_name)
-tokenizer = GPT2Tokenizer.from_pretrained(model_name)
-#%%
-# Test Sorguları Listesi
-queries = [
-    "Son 24 saatte hangi URL'ler 500 hatası aldı?",
-    "Son bir ayda hangi IP adresleri en fazla 403 hatası aldı?",
-    "Son bir yıl içinde en sık kullanılan POST isteklerinin listesi nedir?",
-    "Son 30 gün içinde hangi tarayıcılar en fazla 404 hatası aldı?",
-    "Son haftada hangi endpoint'ler en yüksek Response Size'a sahipti?",
-    "En son 10 istekte hangi User Agent'lar kullanıldı?",
-    "En yüksek zaman alımı (Time Taken) olan 5 istek nedir?",
-    "Son 6 ayda hangi Referrer en çok ziyaret edildi?",
-    "Son 24 saatte hangi Endpoint'lerde 502 hatası alındı?",
-    "Hangi IP adresleri en uzun süre GET isteği yaptı?",
-    "Which IP adress has Longest GET time ?",
-]
-#%%
-# Her bir sorguyu test etme
-for query in queries:
-    print("-" * 80)
-    print("\n")
-    
-    response = answer_question(query)
-    print(f"Sorgu: {query}")
-    print(f"Modelin Yanıtı: {response}")
-    print("\n")
+Bu proje MIT lisansı altında lisanslanmıştır. Daha fazla bilgi için `LICENSE` dosyasına göz atabilirsiniz.
