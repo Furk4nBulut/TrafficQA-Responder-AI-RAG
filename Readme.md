@@ -5,6 +5,11 @@
 Bu proje, web trafik loglarına dayalı olarak geliştirilen bir yapay zeka destekli soru-cevap sistemi geliştirme sürecini içermektedir. Sistem, kullanıcıların doğal dilde sorduğu soruları analiz ederek, web trafik loglarından anlamlı yanıtlar üretmeyi amaçlar. Bu proje, özellikle web sitelerinin trafik verilerini daha etkili bir şekilde analiz etmeye ve performanslarını iyileştirmeye yönelik önemli katkılar sunma potansiyeline sahiptir.
 
 ## [Proje Raporu](https://github.com/Furk4nBulut/WebTrafficQA-Responder-AI-RAG/blob/master/FurkanBulutReport.pdf) , [Proje Kodları](https://github.com/Furk4nBulut/WebTrafficQA-Responder-AI-RAG/blob/master/product.ipynb)
+## Proje Videosu
+
+Aşağıdaki önizleme resmine tıklayarak projenin çalıştırılma videosunu izleyebilirsiniz:
+
+[![Proje Videosu](https://img.youtube.com/vi/Kzss2Vug7PE/maxresdefault.jpg)](https://www.youtube.com/watch?v=Kzss2Vug7PE)
 
 
 ## İçindekiler
