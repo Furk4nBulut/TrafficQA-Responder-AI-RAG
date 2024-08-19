@@ -4,7 +4,8 @@
 
 Bu proje, web trafik loglarına dayalı olarak geliştirilen bir yapay zeka destekli soru-cevap sistemi geliştirme sürecini içermektedir. Sistem, kullanıcıların doğal dilde sorduğu soruları analiz ederek, web trafik loglarından anlamlı yanıtlar üretmeyi amaçlar. Bu proje, özellikle web sitelerinin trafik verilerini daha etkili bir şekilde analiz etmeye ve performanslarını iyileştirmeye yönelik önemli katkılar sunma potansiyeline sahiptir.
 
-## [Proje Raporu](https://github.com/Furk4nBulut/WebTrafficQA-Responder-AI-RAG/blob/master/FurkanBulutReport.pdf)
+## [Proje Raporu](https://github.com/Furk4nBulut/WebTrafficQA-Responder-AI-RAG/blob/master/FurkanBulutReport.pdf) , [Proje Kodları](https://github.com/Furk4nBulut/WebTrafficQA-Responder-AI-RAG/blob/master/product.ipynb)
+
 
 ## İçindekiler
 
@@ -25,7 +26,7 @@ Web siteleri, kullanıcı davranışlarını izleyebilmekte ve bu davranışlar�
 
 ## Proje Dosya Yapısı
 
-- **Product.ipynb**: Projenin çalışır durumda olan Jupyter notebook dosyası.
+- **Product.ipynb**: Projenin çalışır durumda olan Jupyter notebook dosyası. Projeyi bu dosya ile incelemeniz tavsiye edilir.
 - **Data/**:
   - **Apache/**: `DataGenerator.py` dosyası kullanılarak oluşturulan `logfiles.log` ve `data.csv` dosyaları burada bulunur.
   - **WebTraffic/**: İnternet üzerinde bulunan hazır veri setlerine ait 5 farklı CSV dosyası içerir.
